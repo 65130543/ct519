@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  db:
+    image: mariadb
+    container_name: myhobbies-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 65130543
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 65130543
+      MYSQL_DATABASE: hobbies_db
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the init.sql script
+    networks:
+      - myhobbies-network
+
+  web:
+    build: .
+    container_name: myhobbies-web
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:80"
+    networks:
+      - myhobbies-network
+
+networks:
+  myhobbies-network:
+
+volumes:
+  db_data:
+
